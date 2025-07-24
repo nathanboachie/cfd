@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <math.h>
+#include <fstream>
 
 /**
  * 1D Shock Tube 
@@ -55,8 +56,8 @@ void initialiseFlow(std::vector<double> &rho, std::vector<double> &p, std::vecto
 
 
 void LaxFriedrichs(double &time, const double& endTime, const int &N, const double& gamma, const double& CFL,
-									 std::vector<double> p, std::vector<double> e, std::vector<double> rho, std::vector<double> u,
-									 std::vector<double> xc, std::vector<double> NewRho, std::vector<double> NewU, std::vector<double> NewE)
+									 std::vector<double> &p, std::vector<double> &e, std::vector<double> &rho, std::vector<double> &u,
+									 std::vector<double> &xc, std::vector<double> &NewRho, std::vector<double> &NewU, std::vector<double> &NewE)
 {
 	while(time<=endTime)
 	{
@@ -138,6 +139,16 @@ void LaxFriedrichs(double &time, const double& endTime, const int &N, const doub
 }
 
 
+void writeSolution(const std::vector<double> &vec, std::string filename)
+{	
+	std::ofstream file(filename);
+	for(auto x: vec)
+	{
+		file<<x<<'\n';
+	}
+}
+
+
 int main()
 {
 	// Initialisation of Parameters
@@ -176,6 +187,10 @@ int main()
 
 	//Run Simulation
 	LaxFriedrichs(t,endTime,N,gamma,CFL,p,e,rho,u,xc,NewRho,NewU,NewE);
+	writeSolution(xc,"xc.txt");
+	writeSolution(rho,"rho.txt");
+	writeSolution(u,"u.txt");
+	writeSolution(e,"e.txt");
 
 
 	std::cout<<"Completed Simulation!" <<std::endl;
