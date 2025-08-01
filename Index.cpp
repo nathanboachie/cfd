@@ -13,51 +13,52 @@
 /**
  * @brief Populate General Matrix
  *
- * @param   nsv     Leading dimension of matrix
- * @param   H       Pointer to matrix storage of size n*n
- * @param   lam     lambda value
+ * @param   n       Leading dimension of matrix, Assumes square
+ * @param   Mat     Pointer to matrix storage of size n*n
+ * @param   val1    Value 1
+ * @param		val2		Value 2
  * @param   dx      Grid spacing
  */
-/**
- * @brief Populate Helmholtz symmetric matrix (upper only)
- *
- * @param   nsv     Leading dimension of matrix
- * @param   H       Pointer to matrix storage of size nsv*nsv
- * @param   lam     Lambda coefficient
- * @param   dx      Grid spacing
- */
-void FillHelmholtzMatrix1(int nsv, double* H, double lam, double dx) {
-    const double oodx2 = 1.0/dx/dx;
-    H[0] = -lam - 2.0*oodx2;
-    for (int i = 1; i < nsv; ++i) {
-        H[i*nsv + i - 1] = oodx2;
-        H[i*nsv + i] = -lam - 2.0*oodx2;
+void Matrix1(const int n,double* Mat,const int val1, const int val2) {
+    for (int i = 1; i < n; ++i) {
+        Mat[i*n + i - 1] = val1;
+        Mat[i*n + i] = val2;
     }
 }
 
-void FillHelmholtzMatrix2(int nsv, double* H, double lam, double dx) {
-    const double oodx2 = 1.0/dx/dx;
-		for(int i=0; i<nsv; ++i)
+/**
+ * @brief Populate General Matrix
+ *
+ * @param   m				Number of rows
+ * @param 	n 			Number of colummns
+ * @param   Mat     Pointer to matrix storage of size n*n
+ * @param   val1    Value 1
+ * @param		val2		Value 2
+ * @param   dx      Grid spacing
+ */
+
+void Matrix2(const int m, const int n, double* Mat, const int val1, const int val2) {
+		for(int i=0; i<m; ++i)
 		{
-			for(int j=0;j<nsv;++j)
+			for(int j=0;j<n;++j)
 			{
 				if(j==i)
 				{
-					H[i*nsv+j]=-lam-2.0*oodx2;
+					Mat[i*n+j]=val1;
 				}
 				else if(j==i-1)
 				{
-					H[i*nsv+j]=oodx2;
+					Mat[i*n+j]=val2;
 				}
 			}
 		}
 }
 
-void PrintMatrix(int nsv, double* H) {
+void PrintMatrix(const int m, const int n, double* Mat) {
 		std::cout.precision(4);
-    for (int i = 0; i < nsv; ++i) {
-        for (int j = 0; j < nsv; ++j) {
-					std::cout << std::setw(6) << H[i*nsv+j] << " ";
+    for (int i = 0; i < m; ++i) {
+        for (int j = 0; j < n; ++j) {
+					std::cout << std::setw(6) << Mat[i*n+j] << " ";
         }
 				std::cout << std::endl;
     }
@@ -66,15 +67,12 @@ void PrintMatrix(int nsv, double* H) {
 
 int main()
 {
-	const int    n   = 21;          // Number of grid-points
-  const int    nsv = n - 2;       // Number of unknown DOFs
-  const double lam = 1.0;         // Value of Lambda
-  const double L   = 1.0;         // Length of domain
-  const double dx  = L / (n - 1); // Grid-point spacing
+  const int nx=20;
+	const int ny=20;
 
-  double* H = new double[nsv*nsv];// Helmholtz matrix storagea
-	FillHelmholtzMatrix2(nsv,H,lam,dx);
-	PrintMatrix(nsv,H);
+  double* Mat = new double[nx*ny];// Helmholtz matrix storagea
+	Matrix2(nx,ny,Mat,2,3);
+	PrintMatrix(nx,ny,Mat);
 
 	return 0;
 }
