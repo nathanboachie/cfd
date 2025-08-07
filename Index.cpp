@@ -54,6 +54,23 @@ void Matrix2(const int m, const int n, double* Mat, const int val1, const int va
 		}
 }
 
+
+// Implementations for Banded Matrices //
+/**
+ * @brief Populate Banded Matrix
+ * @param   ny     	Number of rows already known to be 2 as this is a banded matrix
+ * @param   Mat       Matrix
+ */
+void BandedMatrix1(int ny, double* Mat,const double val1, const double val2) {
+    const int ldh = 2;      // Diagonal and upper diagonal, No. of stored diagonals
+
+    Mat[1] = val1;
+    for (int i = 1; i < ny; ++i) {
+        Mat[i*ldh    ] = val1;
+        Mat[i*ldh + 1] = val2;
+    }
+}
+
 void PrintMatrix(const int m, const int n, double* Mat) {
 		std::cout.precision(4);
     for (int i = 0; i < m; ++i) {
@@ -69,10 +86,13 @@ int main()
 {
   const int nx=20;
 	const int ny=20;
+	const int ldh=2;
 
-  double* Mat = new double[nx*ny];// Helmholtz matrix storagea
-	Matrix2(nx,ny,Mat,2,3);
-	PrintMatrix(nx,ny,Mat);
+  double* Mat = new double[nx*ny]; // General matrix storage
+	double*	BandedMat = new double[ldh*ny];
+
+	BandedMatrix1(ny,BandedMat,2,3);	
+	PrintMatrix(ldh,ny,BandedMat);
 
 	return 0;
 }
